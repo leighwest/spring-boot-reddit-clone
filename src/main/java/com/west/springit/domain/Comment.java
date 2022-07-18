@@ -16,6 +16,4 @@ public class Comment {
     @GeneratedValue
     private Long id;
     private String body;
-
-
 }
