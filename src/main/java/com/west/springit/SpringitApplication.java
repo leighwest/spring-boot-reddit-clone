@@ -32,7 +32,7 @@ public class SpringitApplication {
         };
     }
 
-    @Bean
+//    @Bean         Commented out so that Spring won't pick this up and run it
     CommandLineRunner clr(LinkRepository linkRepository, CommentRepository commentRepository) {
         return args -> {
             Link link = new Link("Getting Started with Spring Boot 2", "https://therealdanvega.com/spring-boot-2");
