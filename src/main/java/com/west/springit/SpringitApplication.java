@@ -1,10 +1,7 @@
 package com.west.springit;
 
 import com.west.springit.config.SpringitProperties;
-import com.west.springit.domain.Comment;
-import com.west.springit.domain.Link;
-import com.west.springit.repository.CommentRepository;
-import com.west.springit.repository.LinkRepository;
+import org.ocpsoft.prettytime.PrettyTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -32,16 +29,8 @@ public class SpringitApplication {
         };
     }
 
-//    @Bean         Commented out so that Spring won't pick this up and run it
-    CommandLineRunner clr(LinkRepository linkRepository, CommentRepository commentRepository) {
-        return args -> {
-            Link link = new Link("Getting Started with Spring Boot 2", "https://therealdanvega.com/spring-boot-2");
-            linkRepository.save(link);
-
-            Comment comment = new Comment("This Spring Boot 2 link is awesome!", link);
-            commentRepository.save(comment);
-            link.addComment(comment);
-        };
+    @Bean
+    PrettyTime prettyTime() {
+        return new PrettyTime();
     }
-
 }

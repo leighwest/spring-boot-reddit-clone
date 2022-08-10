@@ -16,6 +16,6 @@ public class HomeController {
     @GetMapping("/home")
     public String home(Model model) {
         model.addAttribute("title", "Hello, Thymeleaf!");
-        return "/link/index";
+        return "list";
     }
 }
