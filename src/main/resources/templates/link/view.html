@@ -8,6 +8,10 @@
 
     <div class="container" th:fragment="content">
 
+        <div class="alert alert-success" role="alert" th:if="${success}">
+            Your new link was created!
+        </div>
+
         <!-- links -->
         <div class="row link" th:each="link : ${links}">
             <div class="col-1">
