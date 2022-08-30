@@ -1,27 +1,42 @@
 package com.west.springit.bootstrap;
 
 import com.west.springit.domain.Link;
+import com.west.springit.domain.Role;
+import com.west.springit.domain.User;
 import com.west.springit.repository.CommentRepository;
 import com.west.springit.repository.LinkRepository;
+import com.west.springit.repository.RoleRepository;
+import com.west.springit.repository.UserRepository;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 @Component
 public class DatabaseLoader implements CommandLineRunner {
 
-    private LinkRepository linkRepository;
-    private CommentRepository commentRepository;
+    private final LinkRepository linkRepository;
+    private final RoleRepository roleRepository;
 
-    public DatabaseLoader(LinkRepository linkRepository, CommentRepository commentRepository) {
+    private final CommentRepository commentRepository;
+    private final UserRepository userRepository;
+
+    public DatabaseLoader(LinkRepository linkRepository, CommentRepository commentRepository, RoleRepository roleRepository, CommentRepository commentRepository1, UserRepository userRepository) {
         this.linkRepository = linkRepository;
-        this.commentRepository = commentRepository;
+        this.roleRepository = roleRepository;
+        this.commentRepository = commentRepository1;
+        this.userRepository = userRepository;
     }
 
     @Override
     public void run(String... args) {
+
+        addUsersAndRoles();
+
         Map<String, String> links = new HashMap<>();
         links.put("Securing Spring Boot APIs and SPAs with OAuth 2.0", "https://auth0.com/blog/securing-spring-boot-apis-and-spas-with-oauth2/?utm_source=reddit&utm_medium=sc&utm_campaign=springboot_spa_securing");
         links.put("Easy way to detect Device in Java Web Application using Spring Mobile - Source code to download from GitHub", "https://www.opencodez.com/java/device-detection-using-spring-mobile.htm");
@@ -39,6 +54,29 @@ public class DatabaseLoader implements CommandLineRunner {
         links.forEach((k, v) -> {
             linkRepository.save(new Link(k, v));
         });
+    }
+
+    private void addUsersAndRoles() {
+
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        String secret = "{bcrypt}" + encoder.encode("password");
+
+        Role userRole = new Role("ROLE_USER");
+        roleRepository.save(userRole);
+        Role adminRole = new Role("ROLE_ADMIN");
+        roleRepository.save(adminRole);
+
+        User user = new User("user@gmail.com",secret,true);
+        user.addRole(userRole);
+        userRepository.save(user);
+
+        User admin = new User("admin@gmail.com",secret,true);
+        admin.addRole(adminRole);
+        userRepository.save(admin);
+
+        User master = new User("super@gmail.com",secret,true);
+        master.addRoles(new HashSet<>(Arrays.asList(userRole,adminRole)));
+        userRepository.save(master);
     }
 }
 

@@ -22,7 +22,7 @@ public class SecurityConfiguration  {
         http
             .authorizeRequests()
                 .antMatchers("/").permitAll()
-                .antMatchers("/link/submit").hasRole("ADMIN")
+                .antMatchers("/link/submit").hasRole("USER")
             .and()
             .formLogin();
         return http.build();
